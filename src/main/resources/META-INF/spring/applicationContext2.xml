@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:component-scan base-package="com.alibba.batchdata.domain"/>
+	<context:component-scan base-package="com.alibba.batchdata.repo"/>
+
+	<context:annotation-config/>
+
+	<!-- properties属性替换配置文件 -->
+	<context:property-placeholder location="/WEB-INF/conf/config.properties,/WEB-INF/conf/config.properties" />
+	
+	<!-- <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	    <property name="dataSource" ref="dataSource"/>
+	    <property name="persistenceXmlLocation" value="chapter8/persistence.xml"/>
+	    <property name="persistenceUnitName" value="persistenceUnit"/>
+	    <property name="persistenceProvider" ref="persistenceProvider"/>
+	    <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+	    <property name="jpaDialect" ref="jpaDialect"/>
+	    <property name="jpaProperties">
+	        <props>
+	            <prop key="hibernate.show_sql">true</prop>
+	        </props>
+	    </property>
+  </bean> -->	
+  
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+	    <property name="persistenceUnitName" value="persistenceUnit"/>
+  </bean>	
+
+
+	<bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+   		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+                
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:nestedTransactionAllowed="true">
+ 		<property name="entityManagerFactory" ref="entityManagerFactory"/>  
+	</bean>
+
+
+
+</beans>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://repo.alibaba-inc.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://repo.alibaba-inc.com/schema/dubbo http://repo.alibaba-inc.com/schema/dubbo/dubbo-component.xsd">
+	<!--连接器配置 -->
+	<bean id="napoliConnector" class="com.alibaba.napoli.client.connector.NapoliConnector"
+		init-method="init" destroy-method="close">
+		<!--napoli服务器地址 -->
+		<property name="address">
+			<value>${napoli.connector.address}</value>
+		</property>
+		<!--发送失败消息存储位置 -->
+		<property name="storePath">
+			<value>${napoli.connector.storePath}</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="napoliReceiversManager"
+		class="com.alibaba.lp.biz.napoli.reciver.NapoliReceiversManager"
+		init-method="start" destroy-method="close">
+		<property name="napoliReceiversList">
+			<list>
+				<ref bean="saleCountIsZeroMessageReceiver" />
+			</list>
+		</property>
+	</bean>
+	
+
+	<!---SCM订单通知消息消息接收者 -->
+	<bean id="saleCountIsZeroMessageReceiver"
+		class="com.alibaba.lp.biz.napoli.reciver.DefaultNapoliAsyncReceiver"
+		init-method="init" destroy-method="close">
+		<property name="connector" ref="napoliConnector" />
+		<property name="name">
+			<value>${napoli.queue.name.zeroSaleCount.message}</value>
+		</property>
+		<property name="instances" value="8" />
+		<property name="worker" ref="scmSaleCountIsZeroWorker" />
+	</bean>
+	
+	<bean id="scmSaleCountIsZeroWorker" class="com.alibaba.lp.biz.napoli.worker.ScmSaleCountIsZeroWorker">
+
+	</bean>
+
+
+
+	
+
+	
+</beans>

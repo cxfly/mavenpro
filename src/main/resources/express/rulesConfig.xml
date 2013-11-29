@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules-config>
+	<rules>
+		<rule text="已签收" />
+		<rule text="成功签收" />
+		<rule text="签收成功" />
+		<rule text="由**签收" />
+		<rule text="正常签收" />
+		<rule text="签收人是" />
+		<rulerefuse text="签收失败" />
+		<rulerefuse text="签收异常" />
+		<rulerefuse text="未签收" />
+	</rules>
+</rules-config>
