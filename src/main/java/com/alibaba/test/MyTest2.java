@@ -8,6 +8,7 @@ public class MyTest2 {
     /**
      * @param args
      */
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
 
         List<Long> ids = new ArrayList<Long>();

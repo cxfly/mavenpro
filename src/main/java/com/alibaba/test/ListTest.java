@@ -12,7 +12,7 @@ public class ListTest {
     private final List<String> list         = new Vector<String>(20000000);
     //    private final List<String> list         = Collections.synchronizedList(new ArrayList<String>(20000000));
     //    private final List<String> list         = new ArrayList<String>();
-    private final String[]     arr          = new String[20000001];
+    //    private final String[]     arr          = new String[20000001];
 
     private static final int   CPU_CORE_NUM = 40;
 

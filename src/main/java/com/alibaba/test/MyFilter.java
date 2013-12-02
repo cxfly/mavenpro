@@ -35,6 +35,7 @@ public class MyFilter implements Filter {
     /**
      * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
      */
+    @SuppressWarnings({ "unused", "unchecked" })
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
