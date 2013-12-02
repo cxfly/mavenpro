@@ -9,7 +9,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -45,11 +44,11 @@ public class LogisticsTraceUtil {
 
     private static int          type   = 5;                                                // B2B公司
 
-    private static LogisticsTraceResult getTraceResult(String companyId, String mailNo, int type, String key)
-                                                                                                             throws Exception {
-        String url = "http://partner.taobao.com/call/out_json_trace_query.do?company_id=" + companyId + "&mail_no="
-                     + mailNo + "&type=" + type + "&digest="
-                     + URLEncoder.encode(calculateDigest(companyId, mailNo, key, type), "utf-8");
+    private static LogisticsTraceResult getTraceResult(String companyId, String mailNo, int type,
+                                                       String key) throws Exception {
+        String url = "http://partner.taobao.com/call/out_json_trace_query.do?company_id="
+                + companyId + "&mail_no=" + mailNo + "&type=" + type + "&digest="
+                + URLEncoder.encode(calculateDigest(companyId, mailNo, key, type), "utf-8");
         if (logger.isDebugEnabled()) {
             logger.debug("[logistics trace][url] " + url);
         }
@@ -69,8 +68,9 @@ public class LogisticsTraceUtil {
         jsonParser.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // 设置JSON日期解析参数。淘宝接口可能在同一响应中返回多种日期格式。
         MultipleDateFormat format = new MultipleDateFormat();
-        format.addDateFormats(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-                              new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+        format.addDateFormats(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"), new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm"));
         format.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         // jsonParser.getDeserializationConfig().setDateFormat(format);
         jsonParser.setDateFormat(format);
@@ -89,7 +89,8 @@ public class LogisticsTraceUtil {
         String result = StringUtils.EMPTY;
         String stringToSign = companyId + mailNo + key;
         try {
-            return new String(Base64.encodeBase64(DigestUtils.md5(stringToSign.getBytes("utf8")), false, false));
+            return new String(Base64.encodeBase64(DigestUtils.md5(stringToSign.getBytes("utf8")),
+                    false, false));
         } catch (UnsupportedEncodingException e) {
             if (logger.isInfoEnabled()) {
                 logger.info("[Base64 Error]" + e.getMessage());
@@ -99,23 +100,26 @@ public class LogisticsTraceUtil {
     }
 
     /*
-     * public static void main(String[] args) throws Exception { String str = "9994440121";
-     * System.out.println(Integer.parseInt(str)); String companyId = "500"; String mailNo = "205018894233"; String url =
-     * "http://partner.taobao.com/call/out_json_trace_query.do?company_id=" + companyId + "&mail_no=" + mailNo +
-     * "&type=" + type + "&digest=" + URLEncoder.encode(calculateDigest(companyId, mailNo, key, type), "utf-8");
-     * System.out.println(url); }
+     * public static void main(String[] args) throws Exception { String str =
+     * "9994440121"; System.out.println(Integer.parseInt(str)); String companyId
+     * = "500"; String mailNo = "205018894233"; String url =
+     * "http://partner.taobao.com/call/out_json_trace_query.do?company_id=" +
+     * companyId + "&mail_no=" + mailNo + "&type=" + type + "&digest=" +
+     * URLEncoder.encode(calculateDigest(companyId, mailNo, key, type),
+     * "utf-8"); System.out.println(url); }
      */
 
     public static void main(String[] args) {
         LogisticsTraceUtil t = new LogisticsTraceUtil();
         try {
             t.process();
-//             t.simepleTest();
+            //             t.simepleTest();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @SuppressWarnings("unused")
     private void simepleTest() {
         String companyId = "100";
         String mailNo = "888146713967";
@@ -123,8 +127,9 @@ public class LogisticsTraceUtil {
             LogisticsTraceResult taobaoTraceResult = getTraceResult(companyId, mailNo, type, key);
             if (taobaoTraceResult == null) {
                 System.out.println("null");
-            } else  if (!StringUtils.isEmpty(taobaoTraceResult.getErrorMsg()) || taobaoTraceResult.getTraces() == null
-                || taobaoTraceResult.getTraces().size() <= 0) {
+            } else if (!StringUtils.isEmpty(taobaoTraceResult.getErrorMsg())
+                    || taobaoTraceResult.getTraces() == null
+                    || taobaoTraceResult.getTraces().size() <= 0) {
                 System.out.println("[ERROR]" + taobaoTraceResult.getTraces());
                 System.out.println("[ERROR]" + taobaoTraceResult.getErrorMsg());
             } else {
@@ -140,7 +145,7 @@ public class LogisticsTraceUtil {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked", "unused" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void process() throws Exception {
         List dataList = this.parseCsv();
         this.expressNo(dataList);
@@ -187,22 +192,26 @@ public class LogisticsTraceUtil {
 
                     String companyId = ReadWlCompanyPropertiesUtil.siteMapProperties(splits[3]);
                     String mailNo = StringUtils.trim(splits[4]);
-                    LogisticsTraceResult taobaoTraceResult = getTraceResult(companyId, mailNo, type, key);
-                    
+                    LogisticsTraceResult taobaoTraceResult = getTraceResult(companyId, mailNo,
+                            type, key);
+
                     if (taobaoTraceResult == null) {
                         System.out.println("[ERROR]: taobaoTraceResult is null");
-                    } else if (!StringUtils.isEmpty(taobaoTraceResult.getErrorMsg()) || taobaoTraceResult.getTraces() == null
-                        || taobaoTraceResult.getTraces().size() <= 0) {
-                        System.out.println("[ERROR]" + taobaoTraceResult.getErrorMsg() + "expressCode: " + splits[3]
-                                           + ", companyId: " + companyId + ", mailNo:" + mailNo + ", tid:" + splits[0]);
+                    } else if (!StringUtils.isEmpty(taobaoTraceResult.getErrorMsg())
+                            || taobaoTraceResult.getTraces() == null
+                            || taobaoTraceResult.getTraces().size() <= 0) {
+                        System.out.println("[ERROR]" + taobaoTraceResult.getErrorMsg()
+                                + "expressCode: " + splits[3] + ", companyId: " + companyId
+                                + ", mailNo:" + mailNo + ", tid:" + splits[0]);
                     } else {
                         List<LogisticsTraceStep> taobaoTraceSteps = taobaoTraceResult.getTraces();
                         Collections.sort(taobaoTraceSteps);
-                        bean.setFirstTraceTime(DateUtils.format(taobaoTraceSteps.get(0).getAcceptTime()));
+                        bean.setFirstTraceTime(DateUtils.format(taobaoTraceSteps.get(0)
+                                .getAcceptTime()));
                         StringBuilder buf = new StringBuilder();
                         int row = 0;
                         for (LogisticsTraceStep step : taobaoTraceSteps) {
-                            if (row>0) {
+                            if (row > 0) {
                                 buf.append("\n");
                             }
                             buf.append("时间: ").append(DateUtils.format(step.getAcceptTime()));
@@ -220,27 +229,27 @@ public class LogisticsTraceUtil {
         return dataList;
     }
 
-
-
     private void expressNo(final List<Object> dataList) throws Exception {
         OutputStream os = new FileOutputStream("E:/Download/tmp/expressNo2.xlsx");
-        ExcelUtil.largeDataExport(os, dataDefine, new DefaultCellStyleServiceImpl(), new PageQueryCallback() {
+        ExcelUtil.largeDataExport(os, dataDefine, new DefaultCellStyleServiceImpl(),
+                new PageQueryCallback() {
 
-            @Override
-            public Page<?> getPage(int pageNo) {
-                Page<Object> page = new Page<Object>();
-                if (pageNo == 1) {
-                    page.setDatas(dataList);
-                }
-                return page;
-            }
-        });
+                    @Override
+                    public Page<?> getPage(int pageNo) {
+                        Page<Object> page = new Page<Object>();
+                        if (pageNo == 1) {
+                            page.setDatas(dataList);
+                        }
+                        return page;
+                    }
+                });
         os.close();
         System.out.println("generate excel sucess");
     }
 
-    private final static String[][] dataDefine = { { "订单号", "tid", "120" }, { "支付时间", "gmtPay", "150" },
-            { "首条流转信息时间", "firstTraceTime", "150" }, { "快递公司名称", "expressName", "100" },
-            { "快递公司编码", "expressCode", "60" }, { "运单号", "expressNo", "100" }, { "流转信息详情", "traceContent", "800" } };
+    private final static String[][] dataDefine = { { "订单号", "tid", "120" },
+            { "支付时间", "gmtPay", "150" }, { "首条流转信息时间", "firstTraceTime", "150" },
+            { "快递公司名称", "expressName", "100" }, { "快递公司编码", "expressCode", "60" },
+            { "运单号", "expressNo", "100" }, { "流转信息详情", "traceContent", "800" } };
 
 }

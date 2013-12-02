@@ -17,14 +17,14 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class GenerateSQL {
-    
+
     static String sql = "update wl_trade t set t.gmt_modified = sysdate, t.receiver_name = '%s', t.receiver_prov = '%s', t.receiver_city = '%s', t.receiver_area = '%s', t.receiver_address = '%s', t.receiver_post = '%s',t.receiver_phone = '%s', t.receiver_mobile = '%s' where t.trade_id = '%s';";
 
     public static void main(String[] args) throws Exception {
         BufferedWriter writer = new BufferedWriter(new FileWriter("g:/tmp/modifyAddress.sql"));
         Workbook wb = WorkbookFactory.create(new FileInputStream("g:/tmp/地址订正（全部汇总）.xlsx"));
-//        Workbook wb = parse("g:/tmp/天猫魔盒地址订正汇总.xlsx");
-        
+        //        Workbook wb = parse("g:/tmp/天猫魔盒地址订正汇总.xlsx");
+
         Sheet sheet = wb.getSheetAt(0);
         int lastRowNum = sheet.getLastRowNum();
         for (int i = 0; i < lastRowNum; i++) {
@@ -39,18 +39,19 @@ public class GenerateSQL {
             String G_postCode = getCellVal(row.getCell(idx++));
             String H_phone = getCellVal(row.getCell(idx++));
             String I_mobile = getCellVal(row.getCell(idx++));
-            String sqlLine = String.format(sql, B_name, C_provice, D_city, E_area, F_addr, G_postCode, H_phone, I_mobile, A_tid);
-//            System.out.println(sqlLine);
-            
+            String sqlLine = String.format(sql, B_name, C_provice, D_city, E_area, F_addr,
+                    G_postCode, H_phone, I_mobile, A_tid);
+            //            System.out.println(sqlLine);
+
             writer.write(sqlLine);
             writer.newLine();
         }
-        
+
         writer.close();
     }
-    
-    
-    private static Workbook parse(String file) throws Exception{
+
+    @SuppressWarnings("unused")
+    private static Workbook parse(String file) throws Exception {
         OPCPackage pkg = OPCPackage.open(new FileInputStream(file));
         XSSFWorkbook xssfwb = new XSSFWorkbook(pkg);
         Workbook wb = new SXSSFWorkbook(xssfwb, 100);
