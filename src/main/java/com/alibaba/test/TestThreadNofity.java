@@ -17,7 +17,6 @@ public class TestThreadNofity {
 
     public static void main(String[] args) {
         TestThreadNofity t = new TestThreadNofity();
-
         t.doTest();
     }
 
@@ -26,7 +25,7 @@ public class TestThreadNofity {
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 1));
+            threadPool.execute(new Worker(tid, 3));
         }
 
         try {
@@ -105,7 +104,7 @@ public class TestThreadNofity {
 
             if (val.decrementAndGet() > 0) {
                 synchronized (doing2) {
-                    doing2.notifyAll();
+                    doing2.notify();
                 }
             }
         }
@@ -116,8 +115,8 @@ public class TestThreadNofity {
                 if (val == null) {
                     doing4.put(tid, 1);
                 } else {
-                    doing4.put(tid, val++);
-                    while (doing4.get(tid) > 1) {
+                    doing4.put(tid, ++val);
+                    if (doing4.get(tid) > 1) {
                         try {
                             doing4.wait();
                         } catch (InterruptedException e) {
@@ -133,7 +132,7 @@ public class TestThreadNofity {
                 int val2 = doing4.get(tid) - 1;
                 doing4.put(tid, val2);
                 if (val2 > 0) {
-                    doing4.notifyAll();
+                    doing4.notify();
                 }
             }
         }
@@ -158,10 +157,7 @@ public class TestThreadNofity {
             }
 
             this.processOrder(tid);
-
-            if (val.decrementAndGet() == 0) {
-                doing2.remove(val);
-            }
+            val.decrementAndGet();
         }
 
         private void processOrder(String tid2) {
@@ -178,7 +174,7 @@ public class TestThreadNofity {
     private List<String> generateData() {
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < NUM; i++) {
-            result.add("100" + (int) (Math.random() * 100));
+            result.add("100" + (int) (Math.random() * 10));
             //            result.add(String.valueOf(i));
             //            result.add("100");
             //            result.add("200");
