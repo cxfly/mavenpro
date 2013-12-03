@@ -13,6 +13,7 @@ public class TestThreadNofity {
     ConcurrentHashMap<Object, Object>        doing  = new ConcurrentHashMap<Object, Object>();
     ConcurrentHashMap<Object, AtomicInteger> doing2 = new ConcurrentHashMap<Object, AtomicInteger>();
     ConcurrentHashMap<Object, Integer>       doing4 = new ConcurrentHashMap<Object, Integer>();
+    ConcurrentHashMap<Object, NotifyObj>     doing5 = new ConcurrentHashMap<Object, NotifyObj>();
     CountDownLatch                           cdl    = new CountDownLatch(NUM);
 
     public static void main(String[] args) {
@@ -25,7 +26,7 @@ public class TestThreadNofity {
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 1));
+            threadPool.execute(new Worker(tid, 5));
         }
 
         try {
@@ -51,14 +52,24 @@ public class TestThreadNofity {
 
         @Override
         public void run() {
-            if (type == 1) {
-                test1();
-            } else if (type == 2) {
-                test2();
-            } else if (type == 3) {
-                test3();
-            } else {
-                test4();
+            switch (type) {
+                case 1:
+                    test1();
+                    break;
+                case 2:
+                    test2();
+                    break;
+                case 3:
+                    test3();
+                    break;
+                case 4:
+                    test4();
+                    break;
+                case 5:
+                    test5();
+                    break;
+                default:
+                    test1();
             }
             cdl.countDown();
         }
@@ -160,6 +171,38 @@ public class TestThreadNofity {
             val.decrementAndGet();
         }
 
+        private void test5() {
+            NotifyObj notifyObj = null;
+            synchronized (doing5) {
+                notifyObj = doing5.get(tid);
+                if (notifyObj == null) {
+                    notifyObj = new NotifyObj();
+                }
+                doing5.put(tid, notifyObj);
+            }
+            synchronized (notifyObj) {
+                if (notifyObj.getCount() > 0) {
+                    try {
+                        notifyObj.setCount(notifyObj.getCount() + 1);
+                        notifyObj.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    notifyObj.setCount(1);
+                }
+            }
+
+            this.processOrder(tid);
+
+            synchronized (notifyObj) {
+                notifyObj.setCount(notifyObj.getCount() - 1);
+                if (notifyObj.getCount() > 0) {
+                    notifyObj.notify();
+                }
+            }
+        }
+
         private void processOrder(String tid2) {
             try {
                 //                Thread.sleep(1);
@@ -169,6 +212,19 @@ public class TestThreadNofity {
                 e.printStackTrace();
             }
         }
+    }
+
+    class NotifyObj {
+        private int count;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
     }
 
     private List<String> generateData() {
