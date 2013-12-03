@@ -1,6 +1,7 @@
 package com.alibaba.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -8,16 +9,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TestThreadNofity {
-    static final int                         NUM    = 10000 * 10;
-    ConcurrentHashMap<Object, Object>        doing  = new ConcurrentHashMap<Object, Object>();
-    ConcurrentHashMap<Object, AtomicInteger> doing2 = new ConcurrentHashMap<Object, AtomicInteger>();
-    ConcurrentHashMap<Object, Integer>       doing4 = new ConcurrentHashMap<Object, Integer>();
-    ConcurrentHashMap<Object, NotifyObj>     doing5 = new ConcurrentHashMap<Object, NotifyObj>();
-    CountDownLatch                           cdl    = new CountDownLatch(NUM);
+public class TestThreadNofity1 {
+    static final int                         NUM     = 10000 * 10;
+    ConcurrentHashMap<Object, Object>        doing   = new ConcurrentHashMap<Object, Object>();
+    ConcurrentHashMap<Object, AtomicInteger> doing2  = new ConcurrentHashMap<Object, AtomicInteger>();
+    ConcurrentHashMap<Object, Integer>       doing4  = new ConcurrentHashMap<Object, Integer>();
+    CountDownLatch                           cdl     = new CountDownLatch(NUM);
+    ConcurrentHashMap<Object, NotifyObj>     doing5  = new ConcurrentHashMap<Object, NotifyObj>();
+    HashMap<String, Data>                    dataMap = new HashMap<String, Data>();
 
     public static void main(String[] args) {
-        TestThreadNofity t = new TestThreadNofity();
+        TestThreadNofity1 t = new TestThreadNofity1();
         t.doTest();
     }
 
@@ -25,8 +27,19 @@ public class TestThreadNofity {
         List<String> tradeIds = this.generateData();
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
+
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 2));
+            Data data = dataMap.get(tid);
+            if (data == null) {
+                data = new Data(tid, false);
+            } else {
+                data.setRepeat(true);
+            }
+            dataMap.put(tid, data);
+        }
+
+        for (String tid : tradeIds) {
+            threadPool.execute(new Worker(tid, 5));
         }
 
         try {
@@ -41,6 +54,45 @@ public class TestThreadNofity {
         threadPool.shutdown();
     }
 
+    class Data {
+        private String  tid;
+        private Boolean repeat;
+
+        public Data(String tid, Boolean repeat) {
+            this.tid = tid;
+            this.repeat = repeat;
+        }
+
+        public String getTid() {
+            return tid;
+        }
+
+        public void setTid(String tid) {
+            this.tid = tid;
+        }
+
+        public Boolean getRepeat() {
+            return repeat;
+        }
+
+        public void setRepeat(Boolean repeat) {
+            this.repeat = repeat;
+        }
+    }
+
+    class NotifyObj {
+        private int count;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+    }
+
     class Worker implements Runnable {
         String tid;
         int    type;
@@ -52,73 +104,66 @@ public class TestThreadNofity {
 
         @Override
         public void run() {
-            switch (type) {
-                case 1:
-                    test1();
-                    break;
-                case 2:
+            if (type == 1) {
+                test1();
+            } else if (type == 2) {
+                Data data = dataMap.get(tid);
+                if (data.getRepeat()) {
                     test2();
-                    break;
-                case 3:
-                    test3();
-                    break;
-                case 4:
-                    test4();
-                    break;
-                case 5:
-                    test5();
-                    break;
-                default:
-                    test1();
+                } else {
+                    this.processOrder(tid);
+                }
+            } else if (type == 3) {
+                test3();
+            } else {
+                test4();
             }
             cdl.countDown();
         }
 
         private void test1() {
-            synchronized (doing) {
-                while (doing.containsKey(tid)) {
-                    try {
-                        doing.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                doing.put(tid, "");
-            }
+            /*
+             * synchronized (doing) { while (doing.containsKey(tid)) { try {
+             * doing.wait(); } catch (InterruptedException e) {
+             * e.printStackTrace(); } } doing.put(tid, ""); }
+             */
 
             this.processOrder(tid);
 
-            synchronized (doing) {
-                doing.remove(tid);
-                doing.notifyAll();
-            }
+            /*
+             * synchronized (doing) { doing.remove(tid); doing.notifyAll(); }
+             */
         }
 
         private void test2() {
-            AtomicInteger val = null;
-            synchronized (doing2) {
-                val = doing2.get(tid);
-                if (val == null) {
-                    val = new AtomicInteger();
-                    doing2.put(tid, val);
+            NotifyObj notifyObj = null;
+            synchronized (doing5) {
+                notifyObj = doing5.get(tid);
+                if (notifyObj == null) {
+                    notifyObj = new NotifyObj();
+                    doing5.put(tid, notifyObj);
                 }
-            }
 
-            synchronized (val) {
-                if (val.incrementAndGet() > 1) {
+            }
+            synchronized (notifyObj) {
+                if (notifyObj.getCount() > 0) {
                     try {
-                        val.wait();
+                        notifyObj.setCount(notifyObj.getCount() + 1);
+                        notifyObj.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    notifyObj.setCount(1);
                 }
             }
 
             this.processOrder(tid);
 
-            synchronized (val) {
-                if (val.decrementAndGet() > 0) {
-                    val.notify();
+            synchronized (notifyObj) {
+                notifyObj.setCount(notifyObj.getCount() - 1);
+                if (notifyObj.getCount() > 0) {
+                    notifyObj.notify();
                 }
             }
         }
@@ -174,38 +219,6 @@ public class TestThreadNofity {
             val.decrementAndGet();
         }
 
-        private void test5() {
-            NotifyObj notifyObj = null;
-            synchronized (doing5) {
-                notifyObj = doing5.get(tid);
-                if (notifyObj == null) {
-                    notifyObj = new NotifyObj();
-                }
-                doing5.put(tid, notifyObj);
-            }
-            synchronized (notifyObj) {
-                if (notifyObj.getCount() > 0) {
-                    try {
-                        notifyObj.setCount(notifyObj.getCount() + 1);
-                        notifyObj.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    notifyObj.setCount(1);
-                }
-            }
-
-            this.processOrder(tid);
-
-            synchronized (notifyObj) {
-                notifyObj.setCount(notifyObj.getCount() - 1);
-                if (notifyObj.getCount() > 0) {
-                    notifyObj.notify();
-                }
-            }
-        }
-
         private void processOrder(String tid2) {
             try {
                 //                Thread.sleep(1);
@@ -217,23 +230,10 @@ public class TestThreadNofity {
         }
     }
 
-    class NotifyObj {
-        private int count;
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-    }
-
     private List<String> generateData() {
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < NUM; i++) {
-            result.add("100" + (int) (Math.random() * 10));
+            result.add("100" + (int) (Math.random() * NUM));
             //            result.add(String.valueOf(i));
             //            result.add("100");
             //            result.add("200");
