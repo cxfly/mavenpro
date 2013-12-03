@@ -26,7 +26,7 @@ public class TestThreadNofity {
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 2));
+            threadPool.execute(new Worker(tid, 5));
         }
 
         try {
