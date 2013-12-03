@@ -26,7 +26,7 @@ public class TestThreadNofity {
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 2));
+            threadPool.execute(new Worker(tid, 1));
         }
 
         try {
@@ -114,10 +114,10 @@ public class TestThreadNofity {
             synchronized (doing4) {
                 Integer val = doing4.get(tid);
                 if (val == null) {
-                    val = 0;
-                    doing4.put(tid, 0);
+                    doing4.put(tid, 1);
                 } else {
-                    while ((val = doing4.get(tid)) > 1) {
+                    doing4.put(tid, val++);
+                    while (doing4.get(tid) > 1) {
                         try {
                             doing4.wait();
                         } catch (InterruptedException e) {
@@ -125,9 +125,6 @@ public class TestThreadNofity {
                         }
                     }
                 }
-
-                val++;
-                doing4.put(tid, val);
             }
 
             this.processOrder(tid);
