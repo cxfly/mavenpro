@@ -25,7 +25,7 @@ public class TestThreadNofity {
         ExecutorService threadPool = Executors.newFixedThreadPool(20);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
-            threadPool.execute(new Worker(tid, 3));
+            threadPool.execute(new Worker(tid, 1));
         }
 
         try {
@@ -65,7 +65,7 @@ public class TestThreadNofity {
 
         private void test1() {
             synchronized (doing) {
-                while (doing.contains(tid)) {
+                while (doing.containsKey(tid)) {
                     try {
                         doing.wait();
                     } catch (InterruptedException e) {
