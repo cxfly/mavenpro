@@ -19,6 +19,9 @@ public class TestThreadNofity {
     public static void main(String[] args) {
         TestThreadNofity t = new TestThreadNofity();
         t.doTest();
+        //        System.out.println(t.doing.putIfAbsent("a", "1"));
+        //        System.out.println(t.doing.putIfAbsent("a", "2"));
+        //        System.out.println(t.doing.get("a"));
     }
 
     private void doTest() {
@@ -96,12 +99,8 @@ public class TestThreadNofity {
 
         private void test2() {
             AtomicInteger val = null;
-            synchronized (doing2) {
+            if ((val = doing2.putIfAbsent(tid, new AtomicInteger())) == null) {
                 val = doing2.get(tid);
-                if (val == null) {
-                    val = new AtomicInteger();
-                    doing2.put(tid, val);
-                }
             }
 
             synchronized (val) {
@@ -176,13 +175,10 @@ public class TestThreadNofity {
 
         private void test5() {
             NotifyObj notifyObj = null;
-            synchronized (doing5) {
+            if ((notifyObj = doing5.putIfAbsent(tid, new NotifyObj())) == null) {
                 notifyObj = doing5.get(tid);
-                if (notifyObj == null) {
-                    notifyObj = new NotifyObj();
-                }
-                doing5.put(tid, notifyObj);
             }
+
             synchronized (notifyObj) {
                 if (notifyObj.getCount() > 0) {
                     try {
