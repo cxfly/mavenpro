@@ -7,14 +7,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicStampedReference;
 
 public class TestThreadNofity {
-    static final int                         NUM    = 10000 * 10;
-    ConcurrentHashMap<Object, Object>        doing  = new ConcurrentHashMap<Object, Object>();
-    ConcurrentHashMap<Object, AtomicInteger> doing2 = new ConcurrentHashMap<Object, AtomicInteger>();
-    ConcurrentHashMap<Object, Integer>       doing4 = new ConcurrentHashMap<Object, Integer>();
-    ConcurrentHashMap<Object, NotifyObj>     doing5 = new ConcurrentHashMap<Object, NotifyObj>();
-    CountDownLatch                           cdl    = new CountDownLatch(NUM);
+    static final int                                           NUM    = 10000 * 10;
+    ConcurrentHashMap<Object, Object>                          doing  = new ConcurrentHashMap<Object, Object>();
+    ConcurrentHashMap<Object, AtomicInteger>                   doing2 = new ConcurrentHashMap<Object, AtomicInteger>();
+    ConcurrentHashMap<Object, Integer>                         doing4 = new ConcurrentHashMap<Object, Integer>();
+    ConcurrentHashMap<Object, NotifyObj>                       doing5 = new ConcurrentHashMap<Object, NotifyObj>();
+    ConcurrentHashMap<Object, AtomicStampedReference<Integer>> doing6 = new ConcurrentHashMap<Object, AtomicStampedReference<Integer>>();
+    CountDownLatch                                             cdl    = new CountDownLatch(NUM);
 
     public static void main(String[] args) {
         TestThreadNofity t = new TestThreadNofity();
@@ -26,7 +28,7 @@ public class TestThreadNofity {
 
     private void doTest() {
         List<String> tradeIds = this.generateData();
-        ExecutorService threadPool = Executors.newFixedThreadPool(20);
+        ExecutorService threadPool = Executors.newFixedThreadPool(30);
         long start = System.currentTimeMillis();
         for (String tid : tradeIds) {
             threadPool.execute(new Worker(tid, 5));
@@ -70,6 +72,9 @@ public class TestThreadNofity {
                     break;
                 case 5:
                     test5();
+                    break;
+                case 6:
+                    test6();
                     break;
                 default:
                     test1();
@@ -202,10 +207,49 @@ public class TestThreadNofity {
             }
         }
 
+        private void test6() {
+            AtomicStampedReference<Integer> val = null;
+            if ((val = doing6.putIfAbsent(tid, new AtomicStampedReference<Integer>(0, 1))) == null) {
+                val = doing6.get(tid);
+            }
+
+            for (;;) {
+                int current = val.getReference();
+                int next = current + 1;
+                if (val.weakCompareAndSet(current, next, val.getStamp(), val.getStamp() + 1)) {
+                    if (val.getReference() > 1) {
+                        synchronized (val) {
+                            try {
+                                val.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+
+            this.processOrder(tid);
+
+            for (;;) {
+                int current = val.getReference();
+                int next = current - 1;
+                if (val.weakCompareAndSet(current, next, val.getStamp(), val.getStamp() + 1)) {
+                    if (val.getReference() > 0) {
+                        synchronized (val) {
+                            val.notify();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         private void processOrder(String tid2) {
             try {
                 //                Thread.sleep(1);
-                Thread.sleep((long) (Math.random() * 10));
+                Thread.sleep((long) (Math.random() * 5));
                 //                System.out.println(tid2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -229,7 +273,7 @@ public class TestThreadNofity {
     private List<String> generateData() {
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < NUM; i++) {
-            result.add("100" + (int) (Math.random() * 10));
+            result.add("100" + (int) (Math.random() * 100));
             //            result.add(String.valueOf(i));
             //            result.add("100");
             //            result.add("200");
