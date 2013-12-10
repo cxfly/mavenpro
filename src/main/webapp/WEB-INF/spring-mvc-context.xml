@@ -19,4 +19,18 @@
 
 	<mvc:default-servlet-handler />
 
+
+ 	<bean id="notifyManager" class="com.taobao.hsf.notify.client.NotifyManagerBean" init-method="init">
+        <property name="publishTopics"> <!-- 配置所需发布的topics -->
+            <list>
+                <value>TMALL_LP_WL_MAIN</value>
+            </list>
+        </property>
+        <property name="groupId" value="LP_WL_PUBLISH_GROUPID"/> <!-- 发送方的GroupId -->
+        <property name="name" value="notifyManager"/> <!-- 应用名 -->
+        <property name="description" value="notifyManager"/> <!-- 描述 -->
+    </bean>
+
+
+
 </beans>
