@@ -352,6 +352,7 @@
     <groupId>com.taobao.configserver</groupId>
     <version>1.6.5</version>
 </dependency>
+
 	    
     </dependencies>
 
