@@ -1,29 +1,29 @@
-<binding xmlns:ns1="http://cxfly.com/test/xstream" name="bind" package="com.cxfly.test.xstream">
-  <namespace uri="http://cxfly.com/test/xstream" default="elements"/>
-  <mapping abstract="true" type-name="ns1:trade" class="com.cxfly.test.xstream.Trade">
+<binding xmlns:ns1="http://cxfly.com/test/serializer" name="bind" package="com.cxfly.test.serializer">
+  <namespace uri="http://cxfly.com/test/serializer" default="elements"/>
+  <mapping abstract="true" type-name="ns1:trade" class="com.cxfly.test.serializer.Trade">
     <value style="element" name="tradeNo" field="tradeNo" usage="optional"/>
-    <collection field="orderList" name="order_list" usage="optional" create-type="java.util.ArrayList">
+    <collection field="orderList" usage="optional" name="order_list" create-type="java.util.ArrayList">
       <structure map-as="ns1:order" name="order"/>
     </collection>
     <structure map-as="ns1:address" field="address" usage="optional" name="address"/>
-    <collection field="itemList" usage="optional">
+    <collection field="itemList" usage="optional" name="items">
       <value name="item" type="java.lang.String"/>
     </collection>
   </mapping>
-  <mapping class="com.cxfly.test.xstream.Trade" name="trade">
+  <mapping class="com.cxfly.test.serializer.Trade" name="trade">
     <structure map-as="ns1:trade"/>
   </mapping>
-  <mapping abstract="true" type-name="ns1:order" class="com.cxfly.test.xstream.Order">
+  <mapping abstract="true" type-name="ns1:order" class="com.cxfly.test.serializer.Order">
     <value style="element" name="name" field="name" usage="optional"/>
     <value style="attribute" name="buyNum" field="buyNum"/>
   </mapping>
-  <mapping class="com.cxfly.test.xstream.Order" name="order">
+  <mapping class="com.cxfly.test.serializer.Order" name="order">
     <structure map-as="ns1:order"/>
   </mapping>
-  <mapping abstract="true" type-name="ns1:address" class="com.cxfly.test.xstream.Address">
+  <mapping abstract="true" type-name="ns1:address" class="com.cxfly.test.serializer.Address">
     <value style="element" name="city" field="city" usage="optional"/>
   </mapping>
-  <mapping class="com.cxfly.test.xstream.Address" name="address">
+  <mapping class="com.cxfly.test.serializer.Address" name="address">
     <structure map-as="ns1:address"/>
   </mapping>
 </binding>

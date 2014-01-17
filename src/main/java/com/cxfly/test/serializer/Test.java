@@ -1,4 +1,4 @@
-package com.cxfly.test.xstream;
+package com.cxfly.test.serializer;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class Test {
      * org.jibx.binding.BindingGenerator -f bind.xml com.hoo.entity.Account
      * 
      * <pre>
-     * java -cp bin;lib/jibx-tools.jar;lib/log4j-1.2.16.jar org.jibx.binding.generator.BindGen -b  bind.xml com.cxfly.test.xstream.Trade com.cxfly.test.xstream.Order com.cxfly.test.xstream.Address
+     * java -cp bin;lib/jibx-tools.jar;lib/log4j-1.2.16.jar org.jibx.binding.generator.BindGen -b  bind.xml com.cxfly.test.serializer.Trade com.cxfly.test.serializer.Order com.cxfly.test.serializer.Address
      * java -cp bin;lib/jibx-bind.jar org.jibx.binding.Compile -v bind.xml
      * </pre>
      * 

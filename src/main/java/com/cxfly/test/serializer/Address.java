@@ -1,4 +1,4 @@
-package com.cxfly.test.xstream;
+package com.cxfly.test.serializer;
 
 public class Address {
     private String city;

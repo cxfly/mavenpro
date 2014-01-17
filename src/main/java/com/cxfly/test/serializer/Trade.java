@@ -1,4 +1,4 @@
-package com.cxfly.test.xstream;
+package com.cxfly.test.serializer;
 
 import java.util.List;
 

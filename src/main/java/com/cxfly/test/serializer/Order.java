@@ -1,4 +1,4 @@
-package com.cxfly.test.xstream;
+package com.cxfly.test.serializer;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
