@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<trade>
+	<trade_no>111111111</trade_no>
+	<orders>
+		<order>
+			<name>abc</name>
+			<buy_num>3</buy_num>
+		</order>
+		<order>
+			<name>ddd</name>
+			<buy_num>6</buy_num>
+		</order>
+	</orders>
+	<address>
+		<city>杭州市j</city>
+	</address>
+	<itemList>
+		<string>2423</string>
+		<string>24234</string>
+	</itemList>
+</trade>
+
