@@ -1,14 +1,7 @@
 package com.cxfly.test.serializer;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.jibx.runtime.BindingDirectory;
-import org.jibx.runtime.IBindingFactory;
-import org.jibx.runtime.IMarshallingContext;
-import org.jibx.runtime.IUnmarshallingContext;
 
 import com.alibaba.fastjson.JSON;
 import com.thoughtworks.xstream.XStream;
@@ -17,7 +10,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        jibxTest();
+//        jibxTest();
         //        xmlTest();
         //        jsonTest();
     }
@@ -59,22 +52,22 @@ public class Test {
      * 
      * @throws Exception
      */
-    public static void jibxTest() throws Exception {
-        IBindingFactory bfact = BindingDirectory.getFactory(Trade.class);
-        Trade trade = getTrade();
-        IMarshallingContext mctx = bfact.createMarshallingContext();
-
-        StringWriter sw = new StringWriter();
-        mctx.setIndent(2);
-        mctx.marshalDocument(trade, "UTF-8", null, sw);
-        String xmlString = sw.toString();
-        System.out.println(xmlString);
-
-        IUnmarshallingContext uctx = bfact.createUnmarshallingContext();
-        Object parseObject = uctx.unmarshalDocument(IOUtils.toInputStream(xmlString, "utf-8"),
-                "utf-8");
-        System.out.println(parseObject);
-    }
+//    public static void jibxTest() throws Exception {
+//        IBindingFactory bfact = BindingDirectory.getFactory(Trade.class);
+//        Trade trade = getTrade();
+//        IMarshallingContext mctx = bfact.createMarshallingContext();
+//
+//        StringWriter sw = new StringWriter();
+//        mctx.setIndent(2);
+//        mctx.marshalDocument(trade, "UTF-8", null, sw);
+//        String xmlString = sw.toString();
+//        System.out.println(xmlString);
+//
+//        IUnmarshallingContext uctx = bfact.createUnmarshallingContext();
+//        Object parseObject = uctx.unmarshalDocument(IOUtils.toInputStream(xmlString, "utf-8"),
+//                "utf-8");
+//        System.out.println(parseObject);
+//    }
 
     private static Trade getTrade() {
         Trade trade = new Trade();
