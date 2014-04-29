@@ -6,11 +6,13 @@ public class ClassA {
     {
         System.out.println("block :" + 30001);
     }
+    
+    public static int b = getB();
+    
     static {
         System.out.println("static :" + 3000);
     }
 
-    public static int b = getB();
 
     private int getA() {
         System.out.println("getA :" + 111);

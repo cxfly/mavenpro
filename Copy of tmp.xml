@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<configuration>
+
+	<property>
+		<name>hbase.rootdir</name>
+		<value>hdfs://server007:9000/hbase</value>
+	</property>
+	<property>
+		<name>dfs.replication</name>
+		<value>2</value>
+	</description>
+	</property>
+	<property>
+		<name>hbase.cluster.distributed</name>
+		<value>true</value>
+	</property>
+
+
+
+
+
+	<property>
+		<name>hbase.rootdir</name>
+		<value>hdfs://master:9000/hbase</value>
+	</property>
+	<property>
+		<name>hbase.cluster.distributed</name>
+		<value>true</value>
+	</property>
+
+	<property>
+		<name>hbase.master</name>
+		<value>server007</value>
+	</property>
+	<property>
+		<name>hbase.zookeeper.quorum</name>
+		<value>s1,s2</value>
+	</property>
+	<property>
+		<name>zookeeper.session.timeout</name>
+		<value>60000000</value>
+	</property>
+	<property>
+		<name>hbase.zookeeper.property.clientport</name>
+		<value>2222</value>
+	</property>
+
+</configuration>

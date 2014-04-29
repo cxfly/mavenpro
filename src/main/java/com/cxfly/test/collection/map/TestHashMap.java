@@ -7,8 +7,11 @@ public class TestHashMap {
     Map map = new SimpleMap(4);
 
     public static void main(String[] args) {
-        TestHashMap t = new TestHashMap();
-        t.doTest();
+//        TestHashMap t = new TestHashMap();
+//        t.doTest();
+    	
+    	System.out.println(30&(4-1));
+    	System.out.println((4-1)&30);
     }
 
     public void doTest() {

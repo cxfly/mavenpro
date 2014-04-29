@@ -15,5 +15,9 @@ public class TestMemoryEscape {
         Thread.sleep(1000*300);
 //        System.out.println(map);
     }
+    
+    static class AAA{
+    	
+    }
 
 }
