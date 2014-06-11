@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="demoTaskBean" class="com.taobao.pamirs.schedule.test.DemoTaskBean"/>
+	<bean id="scheduleManagerFactory" class="com.taobao.pamirs.schedule.strategy.TBScheduleManagerFactory"
+		init-method="init">
+		<property name="zkConfig">
+           <map>
+              <entry key="zkConnectString" value="10.204.38.185:2181,10.204.38.186:2181,10.204.38.188:2181" />
+              <entry key="rootPath" value="/taobao-pamirs-schedule/huijin" />
+              <entry key="zkSessionTimeout" value="60000" />
+              <entry key="userName" value="ScheduleAdmin" />
+              <entry key="password" value="password" />
+              <entry key="isCheckParentPath" value="true" />
+           </map>
+       </property>	
+	</bean>
+
+</beans>
+
+	
