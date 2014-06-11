@@ -12,8 +12,10 @@ public class TestRedis {
 			String key = "n" + i;
 			@SuppressWarnings("unused")
 			String result = jedis.set(key, "Hello,Redis-" + i);
-			System.out.println(jedis.get(key));
+			System.out.println(key + " = " + jedis.get(key));
 		}
+		jedis.set("foo", "李四");
+		System.out.println(jedis.get("foo"));
 		long end = System.currentTimeMillis();
 		System.out.println("Simple SET: " + ((end - start) / 1000.0)
 				+ " seconds");
