@@ -17,6 +17,10 @@ public class Test {
 //    	myclass.newInstance();
     	
 //    	System.out.println(Sub.a);
-    	System.out.println(Sub.b);
+//    	System.out.println(Sub.b);
+    	
+    	Parent p = new  Parent();
+    	
+    	
     }
 }

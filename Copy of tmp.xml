@@ -9,7 +9,6 @@
 	<property>
 		<name>dfs.replication</name>
 		<value>2</value>
-	</description>
 	</property>
 	<property>
 		<name>hbase.cluster.distributed</name>

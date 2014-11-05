@@ -1,6 +1,8 @@
 package com.cxfly.test.classload;
 
 public class Parent {
+	public static final String str = "abc_constants";
+	public static final int s = 1;
 	public static int d = 1;
 
 	static {
@@ -8,15 +10,15 @@ public class Parent {
 	}
 	private static int c = getC();
 
-	private int tt = getT();
+	public int tt = getT();
 
 	public Parent() {
 		super();
-		System.out.println("Parent 111122222");
+		System.out.println("Parent() 111122222");
 	}
 
 	private int getT() {
-		System.out.println("parent getT333333");
+		System.out.println("parent.getT() getT333333");
 		return 9;
 	}
 

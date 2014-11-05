@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.alibaba.lp</groupId>
+	<groupId>com.cxfly</groupId>
 	<artifactId>mavenpro</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
@@ -12,7 +12,7 @@
 
 	<properties>
 		<!-- Spring version -->
-		<version.spring>3.2.0.RELEASE</version.spring>
+		<version.spring>3.1.4.RELEASE</version.spring>
 		<!-- Spring Third Party dependencies -->
 		<version.aopalliance>1.0</version.aopalliance>
 
@@ -432,13 +432,17 @@
 		</dependency>
 		
 		<dependency>
-		    <groupId>org.apache.hbase</groupId>
-		    <artifactId>hbase-client</artifactId>
-		    <version>0.98.1-hadoop2</version>
+		<groupId>org.apache.hbase</groupId>
+		<artifactId>hbase-client</artifactId>
+		<version>0.98.1-hadoop2</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>netty</artifactId>
 					<groupId>io.netty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jdk.tools</artifactId>
+					<groupId>jdk.tools</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -460,8 +464,13 @@
 			<artifactId>netty-all</artifactId>
 			<version>5.0.0.Alpha1</version>
 		</dependency>
-		
-		
+
+
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -473,8 +482,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<!-- Surefire plugin before 2.9 version is buggy -->
