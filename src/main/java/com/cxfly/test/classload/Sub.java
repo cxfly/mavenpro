@@ -21,6 +21,7 @@ public class Sub extends Parent {
         return 11;
     }
     
-    
+    public static void init2() {
+	}
 
 }

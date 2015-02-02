@@ -7,6 +7,7 @@ public class Parent {
 
 	static {
 		System.out.println("Parent 1000");
+		c = 3;
 	}
 	private static int c = getC();
 
@@ -25,6 +26,9 @@ public class Parent {
 	private static int getC() {
 		System.out.println("Parent 1111111");
 		return 11;
+	}
+	
+	public static void init() {
 	}
 
 }
