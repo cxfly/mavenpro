@@ -1,32 +1,32 @@
 package com.cxfly.test.net.netty.server;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.ReferenceCountUtil;
+import io.netty.channel.SimpleChannelInboundHandler;
 
-public class DiscardServerHandler extends ChannelHandlerAdapter {
+import java.net.InetAddress;
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-    	ByteBuf in = (ByteBuf) msg;
-        try {
-//            while (in.isReadable()) { // (1)
-//                System.out.print((char) in.readByte());
-//                System.out.flush();
-//            }
-        
-            ctx.write(msg); // (1)
-            ctx.flush(); // (2)
-        } finally {
-//            ReferenceCountUtil.release(msg); // (2)
-        }
-    }
+public class DiscardServerHandler extends SimpleChannelInboundHandler<String> {
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
-    }
+	@Override
+	protected void channelRead0(ChannelHandlerContext ctx, String msg)
+			throws Exception {
+		System.out.println(msg);
+		ctx.channel().writeAndFlush(msg);
+	}
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("RamoteAddress : " + ctx.channel().remoteAddress()
+				+ " active !");
+		ctx.writeAndFlush("Welcome to "
+				+ InetAddress.getLocalHost().getHostName() + " service!\n");
+		super.channelActive(ctx);
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("\nChannel is disconnected");
+		super.channelInactive(ctx);
+	}
+
 }

@@ -14,8 +14,9 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-	<context:component-scan base-package="com.alibaba.lp.domain.*"/>
-	<context:component-scan base-package="com.alibaba.lp.dao.*"/>
+	<context:component-scan base-package="com.cxfly.lp.domain.*"/>
+	<context:component-scan base-package="com.cxfly.lp.dao.*"/>
+	<context:component-scan base-package="com.cxfly.test.*"/>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
@@ -65,8 +66,45 @@
  		<property name="entityManagerFactory" ref="entityManagerFactory"/>  
 	</bean>
 
-<!-- 	<beans:import resource="classpath:/META-INF/spring/biz-task-napoli-config.xml" /> -->
+	<!-- <beans:import resource="classpath:/META-INF/spring/biz-task-napoli-config.xml" /> -->
 	<!-- <beans:import resource="classpath:/META-INF/spring/schedule.xml" /> -->
+
+
+	<!-- <bean id="test3Task"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="exampleJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="cronTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="test3Task" />
+		<property name="cronExpression" value="0 0 0 1 * ?" />
+	</bean>
+
+-->
+
+
+	<bean name="exampleJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.cxfly.test.quartz.ExampleJob" />
+	</bean>
+
+	<!-- <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	    <property name="jobDetail" ref="exampleJob" />
+	    <property name="cronExpression" value="*/5 * * * * ?" />
+	</bean> -->
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="exampleJob" />
+		 <property name="cronExpression" value="0 0 0 1 * ?" />
+	</bean>
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>
 
 	

@@ -16,8 +16,14 @@ import com.cxfly.lp.domain.member.Member;
 @Controller
 @RequestMapping(value = "/")
 public class MemberController {
+    public MemberController(){
+        super();
+    }
+
     @Resource
     private MemberDao memberDao;
+    
+    
 
     @RequestMapping(method = RequestMethod.GET)
     public String displaySortedMembers(Model model) {
