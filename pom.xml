@@ -3,13 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.alibaba.lp</groupId>
+	<groupId>com.cxfly</groupId>
 	<artifactId>mavenpro</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<version.spring>3.2.9.RELEASE</version.spring>
+		<!-- Spring version -->
+		<!-- Spring Third Party dependencies -->
 		<version.aopalliance>1.0</version.aopalliance>
 		<version.standard.taglibs>1.1.2</version.standard.taglibs>
 		<version.commons.logging>1.1.1</version.commons.logging>
@@ -414,6 +416,55 @@
 			<artifactId>curator-recipes</artifactId>
 			<version>2.7.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-x-discovery</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-examples</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+		
+		<dependency>
+		<groupId>org.apache.hbase</groupId>
+		<artifactId>hbase-client</artifactId>
+		<version>0.98.1-hadoop2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>netty</artifactId>
+					<groupId>io.netty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jdk.tools</artifactId>
+					<groupId>jdk.tools</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.taobao.pamirs.schedule</groupId>
+			<artifactId>tbschedule</artifactId>
+			<version>3.2.13-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -436,11 +487,6 @@
 				<version>2.12.4</version>
 			</plugin>
 
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.1.v20140609</version>
-			</plugin>
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
