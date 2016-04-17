@@ -29,4 +29,5 @@ public class DiscardServerHandler extends SimpleChannelInboundHandler<String> {
 		super.channelInactive(ctx);
 	}
 
+
 }
