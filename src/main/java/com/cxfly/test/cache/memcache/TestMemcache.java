@@ -58,7 +58,8 @@ public class TestMemcache {
 			InterruptedException, MemcachedException {
 		memcachedClient.set("abc", 0, order);
 		// System.out.println(memcachedClient.add("abc", 0, order));
-		System.out.println(memcachedClient.get("abc"));
+		Object object = memcachedClient.get("abc");
+		System.out.println(object);
 	}
 
 	private static void randomTest(MemcachedClient memcachedClient) throws TimeoutException, InterruptedException,
